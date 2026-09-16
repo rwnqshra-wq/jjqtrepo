@@ -421,7 +421,7 @@ function submissionCardEl(submission) {
   card.appendChild(head);
 
   const fields = el('div', 'sub-fields');
-  const list = submission.fields || [];
+  const list = submission.fields || submission.payload || [];
 
   if (list.length === 0) {
     fields.appendChild(el('div', 'sub-field', [

