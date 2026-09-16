@@ -1,0 +1,62 @@
+# =============================================================
+#  Jusour - Apache configuration
+# =============================================================
+
+RewriteEngine On
+
+# -------------------------------------------------------------
+#  1. The API and the admin dashboard are always served as-is.
+#
+#  This rule must stay first. The clean-URL rules further down
+#  issue 301 redirects, and a 301 on a POST is turned into a GET
+#  by every browser - which would silently drop the request body
+#  and break every form submission and login.
+# -------------------------------------------------------------
+RewriteRule ^(api|dashboard)/ - [L]
+
+# -------------------------------------------------------------
+#  2. Public site: serve extension-less URLs.
+# -------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# -------------------------------------------------------------
+#  3. Public site: redirect an explicit extension to the clean URL.
+#     Excludes the API and dashboard for the reason given above.
+# -------------------------------------------------------------
+RewriteCond %{REQUEST_URI} !^/(api|dashboard)/
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.*)\.html [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+RewriteCond %{REQUEST_URI} !^/(api|dashboard)/
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(.*)\.php [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# -------------------------------------------------------------
+#  4. Protect the application internals.
+# -------------------------------------------------------------
+<FilesMatch "^(config\.php|\.schema|\.legacy)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Note: the dashboard's noindex header lives in dashboard/.htaccess.
+# FilesMatch matches file names rather than paths, so a directory cannot be
+# targeted from here.
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php82” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
