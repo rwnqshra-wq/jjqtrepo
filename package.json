@@ -5,5 +5,8 @@
   "scripts": {
     "postinstall": "cd server && npm install",
     "start": "cd server && node server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
