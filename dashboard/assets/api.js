@@ -9,10 +9,9 @@
 
 'use strict';
 
-/** Base path of the backend, read from window.DASHBOARD_CONFIG. */
 const API_BASE = (window.DASHBOARD_CONFIG && window.DASHBOARD_CONFIG.apiBaseUrl)
     ? window.DASHBOARD_CONFIG.apiBaseUrl.replace(/\/$/, '')
-    : 'https://api.example.com';
+    : '/api';
 
 /** CSRF token bound to the current session. Set after login or bootstrap. */
 let apiCsrfToken = '';

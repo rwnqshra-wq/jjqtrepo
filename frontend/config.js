@@ -11,10 +11,9 @@
 
 'use strict';
 
-/** Backend endpoint base, read from window.FRONTEND_CONFIG. */
 var JUSOUR_API = (window.FRONTEND_CONFIG && window.FRONTEND_CONFIG.apiBaseUrl) 
     ? (window.FRONTEND_CONFIG.apiBaseUrl.replace(/\/$/, '') + '/')
-    : 'https://api.example.com/';
+    : '/api/';
 
 /** localStorage key holding this browser's reference (kept from before). */
 var JUSOUR_REF_KEY = 'refID';

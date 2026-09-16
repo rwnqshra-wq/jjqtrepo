@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const apiRoutes = require('./routes/api');
 
 const app = express();
@@ -53,6 +54,12 @@ app.use((req, res, next) => {
 // Mount Routes
 app.use('/api', apiRoutes);
 
-app.listen(PORT, () => {
+// Serve Frontend (Root)
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Serve Dashboard
+app.use('/dashboard', express.static(path.join(__dirname, '../dashboard')));
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
