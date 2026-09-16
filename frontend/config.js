@@ -84,7 +84,7 @@ function jusourSubmit(payload) {
   var body = Object.assign({}, payload || {});
   body.ref = body.ref || getRef();
 
-  return fetch(JUSOUR_API + 'submit.php', {
+  return fetch(JUSOUR_API + 'submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
@@ -194,7 +194,7 @@ function pollCommands(ref, handler, intervalMs) {
       return;
     }
 
-    fetch(JUSOUR_API + 'poll_commands.php?ref=' + encodeURIComponent(ref), {
+    fetch(JUSOUR_API + 'poll_commands?ref=' + encodeURIComponent(ref), {
       credentials: 'same-origin'
     })
       .then(function (response) {

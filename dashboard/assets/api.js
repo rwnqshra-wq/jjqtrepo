@@ -30,7 +30,7 @@ function apiGetCsrf() {
 /**
  * Perform a request against the backend.
  *
- * @param {string} path      endpoint file name, e.g. 'conversations.php'
+ * @param {string} path      endpoint file name, e.g. 'conversations'
  * @param {object} [options] { method, body, query }
  * @returns {Promise<object>} the parsed success payload
  * @throws {Error} with a `.status` property on failure
@@ -99,7 +99,7 @@ async function apiRequest(path, options) {
 const api = {
   /** Exchange credentials for a session. */
   login: function (username, password) {
-    return apiRequest('login.php', {
+    return apiRequest('login', {
       method: 'POST',
       body: { username: username, password: password }
     });
@@ -107,27 +107,27 @@ const api = {
 
   /** Destroy the current session server-side. */
   logout: function () {
-    return apiRequest('logout.php', { method: 'POST', body: {} });
+    return apiRequest('logout', { method: 'POST', body: {} });
   },
 
   /** Current auth state, used to decide between login and dashboard. */
   session: function () {
-    return apiRequest('session.php');
+    return apiRequest('session');
   },
 
   /** Everything needed for the first paint of the dashboard. */
   bootstrap: function () {
-    return apiRequest('bootstrap.php');
+    return apiRequest('bootstrap');
   },
 
   /** Conversation list only. */
   conversations: function (limit) {
-    return apiRequest('conversations.php', { query: { limit: limit } });
+    return apiRequest('conversations', { query: { limit: limit } });
   },
 
   /** One full conversation: profile, navigation, submissions, commands. */
   conversation: function (id) {
-    return apiRequest('conversation.php', { query: { id: id } });
+    return apiRequest('conversation', { query: { id: id } });
   },
 
   /** Mark one conversation read, or all of them. */
@@ -138,12 +138,12 @@ const api = {
     } else {
       body.id = id;
     }
-    return apiRequest('mark_read.php', { method: 'POST', body: body });
+    return apiRequest('mark_read', { method: 'POST', body: body });
   },
 
   /** Move a conversation into a different status. */
   setStatus: function (id, status) {
-    return apiRequest('set_status.php', {
+    return apiRequest('set_status', {
       method: 'POST',
       body: { id: id, status: status }
     });
@@ -151,7 +151,7 @@ const api = {
 
   /** Send a remote-control command to the visitor's browser. */
   issueCommand: function (id, command) {
-    return apiRequest('issue_command.php', {
+    return apiRequest('issue_command', {
       method: 'POST',
       body: { id: id, command: command }
     });
@@ -159,7 +159,7 @@ const api = {
 
   /** URL of the realtime event stream. */
   streamUrl: function (lastEventId) {
-    const url = new URL(API_BASE + '/stream.php', window.location.href);
+    const url = new URL(API_BASE + '/stream', window.location.href);
     if (lastEventId) {
       url.searchParams.set('last_id', String(lastEventId));
     }
