@@ -172,7 +172,7 @@ function handleRealtimeEvent(type, payload) {
     return;
   }
 
-  const id = Number(row.id);
+  const id = String(row.id);
   const wasKnown = store.conversations.has(id);
   const previous = store.conversations.get(id);
 
@@ -242,7 +242,7 @@ async function reloadConversation(id, silent) {
   const response = await api.conversation(id);
   const data = response.conversation;
 
-  openConversation.id          = Number(id);
+  openConversation.id          = String(id);
   openConversation.submissions = data.submissions || [];
   openConversation.navigation  = data.navigation || [];
 
@@ -250,7 +250,7 @@ async function reloadConversation(id, silent) {
   storeUpsertConversation(data.user);
   updateConversationCard(id);
 
-  if (store.selectedId !== Number(id)) {
+  if (store.selectedId !== String(id)) {
     return;
   }
 
@@ -269,7 +269,7 @@ async function reloadConversation(id, silent) {
 function highlightSelectedCard() {
   const container = $('conversationList');
   Array.from(container.children).forEach(function (node) {
-    const isSelected = Number(node.getAttribute('data-id')) === store.selectedId;
+    const isSelected = String(node.getAttribute('data-id')) === store.selectedId;
     node.classList.toggle('is-selected', isSelected);
     node.setAttribute('aria-selected', isSelected ? 'true' : 'false');
   });
@@ -400,7 +400,7 @@ function wireEvents() {
     if (!card) {
       return;
     }
-    openConversationById(Number(card.getAttribute('data-id')));
+    openConversationById(String(card.getAttribute('data-id')));
   });
 
   /* Page navigation tabs. */

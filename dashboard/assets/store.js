@@ -63,7 +63,7 @@ function storeUpsertConversation(row) {
   if (!row || row.id === undefined || row.id === null) {
     return;
   }
-  const id = Number(row.id);
+  const id = String(row.id);
 
   if (store.conversations.has(id) && store.selectedId === id) {
     // Preserve locally known read state while the server catches up.
@@ -76,7 +76,7 @@ function storeUpsertConversation(row) {
 
 /** Remove one conversation. */
 function storeRemoveConversation(id) {
-  store.conversations.delete(Number(id));
+  store.conversations.delete(String(id));
 }
 
 /** Replace the whole collection (used by bootstrap and manual refresh). */
@@ -98,7 +98,7 @@ function storeSorted() {
     if (a.last_activity !== b.last_activity) {
       return a.last_activity < b.last_activity ? 1 : -1;
     }
-    return Number(b.id) - Number(a.id);
+    return String(b.id).localeCompare(String(a.id));
   });
   return rows;
 }
@@ -159,7 +159,7 @@ function storeSelected() {
 
 /** Set the open conversation. */
 function storeSelect(id) {
-  store.selectedId = id === null ? null : Number(id);
+  store.selectedId = id === null ? null : String(id);
   store.activePage = 'all';
 }
 
@@ -175,7 +175,7 @@ function storeSetSearch(text) {
 
 /** Mark one conversation read or unread in local state. */
 function storeSetRead(id, isRead) {
-  const row = store.conversations.get(Number(id));
+  const row = store.conversations.get(String(id));
   if (row) {
     row.is_read = isRead === true;
   }

@@ -176,7 +176,7 @@ function previewText(row) {
 
 /** Build one conversation card. */
 function conversationCardEl(row) {
-  const isSelected = store.selectedId === Number(row.id);
+  const isSelected = store.selectedId === String(row.id);
 
   const card = el('button', 'convo');
   card.type = 'button';
@@ -278,8 +278,8 @@ function refreshConversationOrder() {
 /** Re-draw one card from current state, in place. */
 function updateConversationCard(id) {
   const container = $('conversationList');
-  const node = container.querySelector('[data-id="' + Number(id) + '"]');
-  const row = store.conversations.get(Number(id));
+  const node = container.querySelector('[data-id="' + String(id) + '"]');
+  const row = store.conversations.get(String(id));
 
   if (!row) {
     if (node) { node.remove(); }

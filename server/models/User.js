@@ -14,7 +14,11 @@ const userSchema = new mongoose.Schema({
   total_price: { type: String, default: '' },
   current_page: { type: String, default: '' },
   last_activity: { type: Date, default: Date.now }
-}, { timestamps: { createdAt: 'created_at', updatedAt: false } });
+}, { 
+  timestamps: { createdAt: 'created_at', updatedAt: false },
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
 userSchema.index({ last_activity: -1 });
 userSchema.index({ is_read: 1, waiting_for_decision: 1 });
