@@ -37,6 +37,7 @@ const requireAdmin = async (req, res, next) => {
     const admin = await Admin.findById(decoded.id);
     if (!admin) throw new Error();
     req.admin = admin;
+    req.csrf = decoded.csrf;
     
     // Check CSRF for write requests
     if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
@@ -245,7 +246,7 @@ router.get('/bootstrap', requireAdmin, async (req, res) => {
     { key: 'ooredoo_forgot', label_ar: 'أوريدو (نسيان)' }
   ];
 
-  res.json({ ok: true, admin: { username: req.admin.username }, conversations: users, statuses, commands, pages });
+  res.json({ ok: true, admin: { username: req.admin.username }, conversations: users, statuses, commands, pages, csrf: req.csrf });
 });
 
 // GET /api/conversations

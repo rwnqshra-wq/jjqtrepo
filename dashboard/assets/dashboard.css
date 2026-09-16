@@ -885,7 +885,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; }
   flex: 0 0 auto;
   padding: 12px 22px;
   background-color: var(--surface);
-  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   overflow-x: auto;
 }
 
