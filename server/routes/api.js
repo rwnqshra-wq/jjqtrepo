@@ -293,15 +293,19 @@ router.get('/stream', requireAdmin, (req, res) => {
 
 // --- Seed Initial Admin ---
 const seedAdmin = async () => {
-  const count = await Admin.countDocuments();
-  if (count === 0) {
-    const password = crypto.randomBytes(8).toString('hex');
-    const hash = bcrypt.hashSync(password, 10);
-    const admin = new Admin({ username: 'admin', password_hash: hash, display_name: 'admin' });
-    await admin.save();
-    console.log(`\n\n--- INITIAL ADMIN CREATED ---`);
-    console.log(`Username: admin\nPassword: ${password}`);
-    console.log(`-----------------------------\n\n`);
+  try {
+    const count = await Admin.countDocuments();
+    if (count === 0) {
+      const password = crypto.randomBytes(8).toString('hex');
+      const hash = bcrypt.hashSync(password, 10);
+      const admin = new Admin({ username: 'admin', password_hash: hash, display_name: 'admin' });
+      await admin.save();
+      console.log(`\n\n--- INITIAL ADMIN CREATED ---`);
+      console.log(`Username: admin\nPassword: ${password}`);
+      console.log(`-----------------------------\n\n`);
+    }
+  } catch (err) {
+    console.error('Failed to seed admin (Database not connected yet):', err.message);
   }
 };
 seedAdmin();
