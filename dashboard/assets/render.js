@@ -449,14 +449,15 @@ function fieldRowEl(field) {
 
   if (field.sensitive) {
     valueNode.classList.add('is-masked');
-    valueNode.setAttribute('data-revealed', '0');
-    valueNode.setAttribute('title', 'اضغط للعرض');
+    valueNode.setAttribute('data-revealed', '1');
+    valueNode.setAttribute('title', 'اضغط للإخفاء');
 
-    renderMaskedValue(valueNode, value, false);
+    renderMaskedValue(valueNode, value, true);
 
     valueNode.addEventListener('click', function () {
       const revealed = valueNode.getAttribute('data-revealed') === '1';
       renderMaskedValue(valueNode, value, !revealed);
+      valueNode.setAttribute('title', revealed ? 'اضغط للعرض' : 'اضغط للإخفاء');
     });
   } else {
     valueNode.textContent = value;

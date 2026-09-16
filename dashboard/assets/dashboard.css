@@ -881,12 +881,12 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; }
 .action-bar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 18px;
   flex: 0 0 auto;
   padding: 12px 22px;
   background-color: var(--surface);
   border-bottom: 1px solid var(--line);
-  overflow-x: auto;
 }
 
 .action-status { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
@@ -902,7 +902,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.7; }
 }
 .action-status select:focus { outline: none; border-color: var(--brand); }
 
-.action-commands { display: flex; align-items: center; gap: 7px; flex-wrap: nowrap; }
+.action-commands { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 
 .cmd-btn {
   display: inline-flex;
