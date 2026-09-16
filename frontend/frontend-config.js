@@ -1,3 +1,3 @@
 window.FRONTEND_CONFIG = {
-  apiBaseUrl: 'https://api.example.com'
+  apiBaseUrl: '/api/'
 };
