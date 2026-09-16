@@ -2,9 +2,7 @@
   "name": "jusour-root",
   "version": "1.0.0",
   "description": "Root package to automatically start the server on Render without manual configuration.",
-  "engines": {
-    "node": ">=22.11.0"
-  },
+
   "scripts": {
     "start": "node server/server.js"
   },
